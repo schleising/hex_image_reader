@@ -25,22 +25,23 @@ def main():
 
         return
 
-    binary = pytesseract.image_to_string(image=(DOWNLOADS / file_path).as_posix(), config='--psm 6')
+    # Convert the text in the image to a string
+    text = pytesseract.image_to_string(image=(DOWNLOADS / file_path).as_posix(), config='--psm 6')
 
     # Fix any errors in the binary string
-    binary = binary.replace('€', 'e')
-    binary = binary.replace('¢', 'c')
-    binary = binary.replace('C', '')
+    text = text.replace('€', 'e')
+    text = text.replace('¢', 'c')
+    text = text.replace('C', '')
 
-    # Print the binary string
-    print('[bold blue]Binary String[/]')
-    print(f'[green]{binary}[/]')
+    # Print the initial string
+    print('[bold blue]Initial String[/]')
+    print(f'[green]{text}[/]')
 
-    # Match only words which contain only hex characters and are a minimun of 2 characters long
+    # Match only words which contain only hex characters and are a minimun of 5 characters long
     hex_pattern = r'\b[0-9a-f]{5,}\b'
 
     # Find all words which contain only hex characters
-    hex_matches = re.findall(hex_pattern, binary)
+    hex_matches = re.findall(hex_pattern, text)
 
     # Print the hex matches
     print()
@@ -48,24 +49,24 @@ def main():
     for match in hex_matches:
         print(f'[green]{match}[/]')
 
-    # Convert hex characters to ascii
-    ascii_string = ''.join(x for x in hex_matches)
+    # Join the hex matches into a single string
+    hex_string = ''.join(hex_matches)
 
-    # Print the ascii string
+    # Print the hex string
     print()
-    print('[bold blue]Ascii String[/]')
-    print(f'[green]{ascii_string}[/]')
+    print('[bold blue]Hex String[/]')
+    print(f'[green]{hex_string}[/]')
 
-    # Print the length of the ascii string
+    # Print the length of the hex string
     print()
-    print('[bold blue]Length of Ascii String[/]')
-    print(f'[green]{len(ascii_string)}[/]')
+    print('[bold blue]Length of Hex String[/]')
+    print(f'[green]{len(hex_string)}[/]')
 
-    # Convert ascii string to bytes
-    bytes_string = bytes.fromhex(ascii_string)
+    # Convert hex string to bytes
+    bytes_from_string = bytes.fromhex(hex_string)
 
     # Convert the bytes to an ascii string
-    ascii_string = bytes_string.decode('ascii')
+    ascii_string = bytes_from_string.decode('ascii')
 
     # Print the ascii string
     print()
