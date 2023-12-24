@@ -1,5 +1,3 @@
-from ast import main
-from logging import root
 from pathlib import Path
 import re
 
