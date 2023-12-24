@@ -20,7 +20,6 @@ def main():
     # Check if the file exists
     if not file_path.exists():
         print('[bold red]File does not exist![/]')
-
         return
 
     # Convert the text in the image to a string
