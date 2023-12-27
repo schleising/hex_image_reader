@@ -35,10 +35,13 @@ def main():
     print(f'[green]{text}[/]')
 
     # Match only words which contain only hex characters and are a minimun of 5 characters long
-    hex_pattern = r'\b[0-9a-f]{5,}\b'
+    hex_pattern = r'\b[0-9a-fA-F]{5,}\b'
 
     # Find all words which contain only hex characters
     hex_matches = re.findall(hex_pattern, text)
+
+    # Discard any hex matches which start with 00
+    hex_matches = [match for match in hex_matches if not match.startswith('00')]
 
     # Print the hex matches
     print()
