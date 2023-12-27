@@ -23,12 +23,13 @@ def main():
         return
 
     # Convert the text in the image to a string
-    text = pytesseract.image_to_string(image=(DOWNLOADS / file_path).as_posix(), config='--psm 6')
+    text = pytesseract.image_to_string(image=(DOWNLOADS / file_path).as_posix())
 
     # Fix any errors in the binary string
     text = text.replace('€', 'e')
     text = text.replace('¢', 'c')
     text = text.replace('C', '')
+    text = text.replace('74746652070', '74746c652070')
 
     # Print the initial string
     print('[bold blue]Initial String[/]')
@@ -63,15 +64,27 @@ def main():
     print(f'[green]{len(hex_string)}[/]')
 
     # Convert hex string to bytes
-    bytes_from_string = bytes.fromhex(hex_string)
+    try:
+        bytes_from_string = bytes.fromhex(hex_string)
+    except ValueError:
+        bytes_from_string = bytes.fromhex(hex_string[:-1])
 
     # Convert the bytes to an ascii string
-    ascii_string = bytes_from_string.decode('ascii')
+    try:
+        ascii_string = bytes_from_string.decode('utf-8')
+    except UnicodeDecodeError as e:
+        # If the bytes cannot be decoded print each byte as hex
+        for index, byte in enumerate(bytes_from_string):
+            print(f'[green]{index}[/] [blue]{hex(byte)}[/]')
 
-    # Print the ascii string
-    print()
-    print('[bold blue]Decoded String[/]')
-    print(f'[green]{ascii_string}[/]')
+        # Output the exception message
+        print(e)
+
+    else:
+        # Print the ascii string
+        print()
+        print('[bold blue]Decoded String[/]')
+        print(f'[green]{ascii_string}[/]')
 
 if __name__ == '__main__':
     root = tk.Tk()
